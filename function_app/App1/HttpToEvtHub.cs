@@ -8,28 +8,36 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace App1
-{
-    public static class HttpToEvtHub
-    {
+namespace App1{
+    public static class HttpToEvtHub {
         [FunctionName("HttpToEvtHub")]
         public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
-            ILogger log)
-        {
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)]
+            HttpRequest req,
+            ILogger log) {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
-            string name = req.Query["name"];
+            string expectedAuthToken = Environment.GetEnvironmentVariable("AZURE_FUNCTION_SECRET1");
+            string name = (string) req.Query["name"];
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
-            name = name ?? data?.name;
 
-            string responseMessage = string.IsNullOrEmpty(name)
-                ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
-                : $"Hello, {name}. This HTTP triggered function executed successfully.";
+            string authToken = data["auth"];
+            string responseStr = null;
 
-            return new OkObjectResult(responseMessage);
+            if (expectedAuthToken.Equals(authToken)) {
+                responseStr = "auth ok";
+            }
+            else {
+                responseStr = "auth failed";
+            }
+
+            // string responseMessage = string.IsNullOrEmpty(name)
+            //     ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
+            //     : $"Hello, {name}. This HTTP triggered function executed successfully.";
+
+            return new OkObjectResult(responseStr);
         }
     }
 }

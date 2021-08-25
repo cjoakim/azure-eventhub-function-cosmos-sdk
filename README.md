@@ -4,9 +4,7 @@ azure-eventhub-function-cosmos-sdk
 
 ## Links
 
-- https://docs.microsoft.com/en-us/azure/azure-functions/functions-create-function-linux-custom-image?tabs=in-process%2Cbash%2Cazure-cli&pivots=programming-language-csharp
-- https://docs.microsoft.com/en-us/azure/azure-functions/dotnet-isolated-process-guide
-
+- https://docs.microsoft.com/en-us/azure/azure-functions/create-first-function-cli-csharp?tabs=in-process%2Cazure-cli
 
 ## Function App
 
